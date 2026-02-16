@@ -1,12 +1,11 @@
 import ast
 
-
 def parse_code(code_string: str) -> dict:
     """
     Parse and preprocess Python code using AST.
     """
 
-    # 1️⃣ Syntax check + parsing
+    # Syntax check + parsing
     try:
         tree = ast.parse(code_string)
     except SyntaxError as e:
@@ -16,37 +15,16 @@ def parse_code(code_string: str) -> dict:
             "line": e.lineno,
         }
 
-    # 2️⃣ Preprocess / format code
+    # Preprocess / format code
     formatted_code = ast.unparse(tree)
 
-    # 3️⃣ Extract simple structure
-    functions = []
-    classes = []
-    imports = []
-
-    for node in ast.walk(tree):
-
-        if isinstance(node, ast.FunctionDef):
-            functions.append(node.name)
-
-        elif isinstance(node, ast.ClassDef):
-            classes.append(node.name)
-
-        elif isinstance(node, ast.Import):
-            for alias in node.names:
-                imports.append(alias.name)
-
-        elif isinstance(node, ast.ImportFrom):
-            module = node.module or ""
-            for alias in node.names:
-                imports.append(f"{module}.{alias.name}")
+    # Extract simple structure
+    ast_structure: str = ast.dump(tree, indent=4)
 
     return {
         "success": True,
         "formatted_code": formatted_code,
-        "imports": imports,
-        "functions": functions,
-        "classes": classes,
+        "ast_dump": ast_structure
     }
 
 
@@ -63,4 +41,16 @@ def add(a, b):
 """
 
     result = parse_code(sample_code)
-    print(result)
+
+    if not result["success"]:
+        print(" Error found:")
+        print(result["error"]["message"])
+    else:
+        print(" Code parsed successfully!\n")
+
+        print(" Formatted Code ")
+        print(result["formatted_code"])
+
+        print("\n AST Dump ")
+        print(result["ast_dump"])
+
