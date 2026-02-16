@@ -44,13 +44,13 @@ def add(a, b):
 
     if not result["success"]:
         print(" Error found:")
-        print(result["error"]["message"])
+        print(result["error"])
     else:
         print(" Code parsed successfully!\n")
 
-        print(" Formatted Code ")
+        print("Formatted Code: ")
         print(result["formatted_code"])
 
-        print("\n AST Dump ")
+        print("\n AST Dump: ")
         print(result["ast_dump"])
 
