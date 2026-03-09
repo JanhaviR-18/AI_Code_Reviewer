@@ -5,31 +5,37 @@ def parse_code(code_string: str) -> dict:
     Parse and preprocess Python code using AST.
     """
 
-    # Syntax check + parsing
     try:
         tree = ast.parse(code_string)
+
     except SyntaxError as e:
         return {
             "success": False,
             "error": f"Syntax Error: {e}",
             "line": e.lineno,
+            "formatted_code": None,
+            "ast_dump": None
         }
 
-    # Preprocess / format code
-    formatted_code = ast.unparse(tree)
+    # Try formatting code
+    try:
+        formatted_code = ast.unparse(tree)
+    except AttributeError:
+        formatted_code = code_string
 
-    # Extract simple structure
-    ast_structure: str = ast.dump(tree, indent=4)
+    ast_structure = ast.dump(tree, indent=4)
 
     return {
         "success": True,
+        "error": None,
         "formatted_code": formatted_code,
         "ast_dump": ast_structure
     }
 
 
-# 🔹 Demo run
+# Demo run
 if __name__ == "__main__":
+
     sample_code = """
 import math
 
@@ -43,14 +49,13 @@ def add(a, b):
     result = parse_code(sample_code)
 
     if not result["success"]:
-        print(" Error found:")
+        print("Error found:")
         print(result["error"])
     else:
-        print(" Code parsed successfully!\n")
+        print("Code parsed successfully!\n")
 
-        print("Formatted Code: ")
+        print("Formatted Code:")
         print(result["formatted_code"])
 
-        print("\n AST Dump: ")
+        print("\nAST Dump:")
         print(result["ast_dump"])
-
