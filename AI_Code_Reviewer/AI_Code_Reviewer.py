@@ -1,55 +1,21 @@
 import reflex as rx
 
-from code_parser import parse_code
-from error_detector import detect_errors
-from ai_suggester import get_ai_suggestion
-
-
 # -----------------------------
 # State
 # -----------------------------
 class CodeState(rx.State):
 
     code_input: str = ""
-    error_output: str = ""
-    style_output: str = ""
-    optimization_output: str = ""
+    result: str = ""
 
-    async def analyze_code(self):
+    def set_code_input(self,value: str):
+        self.code_input = value
 
-        code = self.code_input.strip()
-
-        if not code:
-            self.error_output = "Please enter Python code."
-            self.style_output = ""
-            self.optimization_output = ""
-            return
-
-        # ---------------- Syntax Check ----------------
-        parse_result = parse_code(code)
-
-        if not parse_result["success"]:
-            self.error_output = parse_result["error"]
-            self.style_output = ""
-            self.optimization_output = ""
-            return
-
-        # ---------------- Static Analysis ----------------
-        detected_errors = detect_errors(code)
-
-        if detected_errors:
-            self.error_output = "\n".join(
-             [f"- **{err['type']}**: {err.get('message','')}" for err in detected_errors]
-          )
+    def analyze_code(self):
+        if self.code_input == "":
+            self.result = "Please paste some code first."
         else:
-            self.error_output = "No major static issues detected."
-
-        # ---------------- AI Suggestions ----------------
-        ai_feedback = get_ai_suggestion(code, detected_errors)
-
-        self.style_output = ai_feedback
-        self.optimization_output = "See AI suggestions above for optimization improvements."
-
+            self.result = "AI analysis will appear here."        
 
 # -----------------------------
 # Navbar Component
@@ -67,7 +33,7 @@ def navbar():
 
         rx.hstack(
             rx.link("Home", href="/"),
-            rx.link("Analyzer", href="/analyzer"),
+            rx.link("Analyze Code", href="/analyzer"),
             rx.link("History", href="/history"),
             rx.link("About", href="/about"),
             rx.link("Help", href="/help"),
@@ -129,41 +95,52 @@ def hero_section():
 # -----------------------------
 # Code Analysis Page
 # -----------------------------
-def analyzer():
-
-    return rx.container(
+def analyze_code():
+    return rx.vstack(
 
         navbar(),
 
-        rx.heading("AI Driven Code Reviewer", size="8"),
+        rx.heading("AI Code Analyzer", size="8"),
+
+        rx.text("Paste your Python code or upload a file to analyze."),
 
         rx.text_area(
-            placeholder="Paste your Python code here...",
+            placeholder="Paste your code here...",
             value=CodeState.code_input,
             on_change=CodeState.set_code_input,
-            width="100%",
+            width="80%",
             height="300px",
+        ),
+
+        rx.upload(
+            rx.button("Upload Python File"),
+            border="1px dashed gray",
+            padding="1em",
         ),
 
         rx.button(
             "Analyze Code",
             on_click=CodeState.analyze_code,
-            margin_top="10px",
+            color_scheme="blue",
+            margin_top="20px"
         ),
 
         rx.divider(),
 
-        rx.heading("Detected Errors"),
-        rx.markdown(CodeState.error_output),
+        rx.heading("Analysis Result", size="6"),
 
-        rx.heading("AI Style Review"),
-        rx.markdown(CodeState.style_output),
+        rx.box(
+            rx.text(CodeState.result),
+            padding="20px",
+            border="1px solid #ccc",
+            width="80%"
+        ),
 
-        rx.heading("Optimization Suggestions"),
-        rx.markdown(CodeState.optimization_output),
-
-        padding="40px",
+        align="center",
+        spacing="5",
+        padding="40px"
     )
+
 
 
 # -----------------------------
@@ -191,7 +168,7 @@ def about():
     )
 
 
-def help_page():
+def help():
     return rx.center(
         rx.heading("Help & Documentation"),
         height="80vh",
@@ -204,7 +181,7 @@ def help_page():
 app = rx.App()
 
 app.add_page(home, route="/")
-app.add_page(analyzer, route="/analyzer")
+app.add_page(analyze_code, route="/analyzer")
 app.add_page(history, route="/history")
 app.add_page(about, route="/about")
-app.add_page(help_page, route="/help")
+app.add_page(help, route="/help")
