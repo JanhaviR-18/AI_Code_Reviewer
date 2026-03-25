@@ -14,7 +14,8 @@ def parse_code(code_string: str) -> dict:
             "error": f"Syntax Error: {e}",
             "line": e.lineno,
             "formatted_code": None,
-            "ast_dump": None
+            "ast_dump": None,
+            "tree" : None
         }
 
     # Try formatting code
@@ -29,7 +30,8 @@ def parse_code(code_string: str) -> dict:
         "success": True,
         "error": None,
         "formatted_code": formatted_code,
-        "ast_dump": ast_structure
+        "ast_dump": ast_structure,
+        "tree" : tree
     }
 
 

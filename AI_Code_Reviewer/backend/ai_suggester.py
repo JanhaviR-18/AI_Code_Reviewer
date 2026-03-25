@@ -5,7 +5,7 @@ from langchain_core.prompts import PromptTemplate
 
 # ------------------ LOAD ENV ------------------
 
-load_dotenv()
+load_dotenv(dotenv_path="AI_Code_Reviewer/.env")
 groq_api_key = os.getenv("GROQ_API_KEY")
 
 # ------------------ MODEL SETUP ------------------
@@ -22,24 +22,34 @@ prompt_template = PromptTemplate(
     template="""
 You are an expert Python code reviewer.
 
-Your job is to analyze Python code and provide helpful feedback.
 Analyze the following Python code and detected issues.
 
-Give SHORT feedback.
+STRICT OUTPUT FORMAT — follow this exactly, no exceptions:
 
-Rules:
-- Max 1–2 lines per issue
+ FEEDBACK:
+Give 2-3 bullet points of short feedback on the issues found.
+- Max 1 line per bullet
 - No long explanations
-- Provide a quick fix suggestion
-- Use bullet points
+
+YOU MUST ALWAYS END WITH THIS EXACT BLOCK:
+
+BEFORE:
+<paste the original problematic code or a key snippet from it>
+
+AFTER:
+<paste the improved version of that same code>
+
+Rules for BEFORE/AFTER:
+- Always include this block even if code looks fine — show a best-practice improvement
+- Keep snippets under 10 lines
+- No markdown, no backticks, no code fences around the snippets
+- BEFORE and AFTER must each be on their own line as shown above
 
 Detected Issues:
 {errors}
 
 Python Code:
 {code}
-
-Provide clear, structured, beginner-friendly explanations.
 """
 )
 

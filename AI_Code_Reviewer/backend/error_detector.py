@@ -185,7 +185,7 @@ class AIReviewer(ast.NodeVisitor):
                 "message": f"Variable '{var}' is defined but never used."
             })
 
-        for imp in unused_imports:
+        for imp in unused_imports: 
             results.append({
                 "type": "Unused Import",
                 "message": f"Module '{imp}' is imported but never used."
