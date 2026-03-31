@@ -1,17 +1,25 @@
 import reflex as rx
 from ..navbar import navbar
 from ..footer import footer
+from ..state import State
 
 # ── Design Tokens ─────────────────────────────
 BG_BASE   = "#f2f0eb"
+BG_DARK   = "#1a1a1a"
 BG_CARD   = "#eceae4"
+BG_CARD_DARK = "#2a2a2a"
 BORDER    = "#1a1a1a"
 BORDER_LT = "#d4d0c8"
+BORDER_DARK = "#3a3a3a"
 ACCENT    = "#c0392b"
 
 TEXT_PRIMARY   = "#1a1a1a"
 TEXT_SECONDARY = "#5a5a5a"
 TEXT_MUTED     = "#757575"
+
+TEXT_PRIMARY_DARK   = "#f2f0eb"
+TEXT_SECONDARY_DARK = "#9a9a9a"
+TEXT_MUTED_DARK     = "#6a6a6a"
 
 FONT_SERIF = "'Instrument Serif', serif"
 FONT_MONO  = "'DM Mono', monospace"
@@ -35,7 +43,7 @@ def _feature_row(num: str, title: str, desc: str) -> rx.Component:
             num,
             font_family=FONT_MONO,
             font_size="10px",
-            color=TEXT_MUTED,
+            color=rx.cond(State.is_dark, TEXT_MUTED_DARK, TEXT_MUTED),
             min_width="28px",
         ),
         rx.vstack(
@@ -44,21 +52,25 @@ def _feature_row(num: str, title: str, desc: str) -> rx.Component:
                 font_family=FONT_SANS,
                 font_size="14px",
                 font_weight="500",
-                color=TEXT_PRIMARY,
+                color=rx.cond(State.is_dark, TEXT_PRIMARY_DARK, TEXT_PRIMARY),
             ),
             rx.text(
                 desc,
                 font_family=FONT_SANS,
                 font_size="13px",
                 font_weight="300",
-                color=TEXT_SECONDARY,
+                color=rx.cond(State.is_dark, TEXT_SECONDARY_DARK, TEXT_SECONDARY),
                 line_height="1.6",
             ),
             spacing="1",
             align="start",
         ),
         padding="18px 0",
-        border_bottom=f"1px solid {BORDER_LT}",
+        border_bottom=rx.cond(
+            State.is_dark,
+            f"1px solid {BORDER_DARK}",
+            f"1px solid {BORDER_LT}",
+        ),
         width="100%",
         spacing="5",
         align="start",
@@ -71,7 +83,7 @@ def index() -> rx.Component:
         rx.html("""
         <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
-        body { background: #f2f0eb; margin: 0; }
+        body { margin: 0; }
         </style>
         """),
 
@@ -88,7 +100,7 @@ def index() -> rx.Component:
                         font_family=FONT_SERIF,
                         font_size=["36px", "52px", "62px"],
                         font_weight="400",
-                        color=TEXT_PRIMARY,
+                        color=rx.cond(State.is_dark, TEXT_PRIMARY_DARK, TEXT_PRIMARY),
                         line_height="1.05",
                         letter_spacing="-0.02em",
                     ),
@@ -112,7 +124,7 @@ def index() -> rx.Component:
                     font_family=FONT_SANS,
                     font_size="15px",
                     font_weight="300",
-                    color=TEXT_SECONDARY,
+                    color=rx.cond(State.is_dark, TEXT_SECONDARY_DARK, TEXT_SECONDARY),
                     line_height="1.7",
                     max_width="480px",
                     text_align="center",
@@ -127,9 +139,9 @@ def index() -> rx.Component:
                                 font_size="11px",
                                 text_transform="uppercase",
                                 letter_spacing="0.08em",
-                                color=BG_BASE,
+                                color=rx.cond(State.is_dark, BG_DARK, BG_BASE),
                             ),
-                            background=TEXT_PRIMARY,
+                            background=rx.cond(State.is_dark, TEXT_PRIMARY_DARK, TEXT_PRIMARY),
                             padding="12px 24px",
                             transition="background 0.15s",
                             _hover={"background": ACCENT},
@@ -137,7 +149,6 @@ def index() -> rx.Component:
                         href="/analyzer",
                         text_decoration="none",
                     ),
-                    
                     spacing="4",
                     justify="center",
                 ),
@@ -148,7 +159,11 @@ def index() -> rx.Component:
                 width="100%",
             ),
             padding="72px 40px 60px",
-            border_bottom=f"1px solid {BORDER_LT}",
+            border_bottom=rx.cond(
+                State.is_dark,
+                f"1px solid {BORDER_DARK}",
+                f"1px solid {BORDER_LT}",
+            ),
             width="100%",
         ),
 
@@ -164,7 +179,7 @@ def index() -> rx.Component:
                             font_size="9px",
                             text_transform="uppercase",
                             letter_spacing="0.14em",
-                            color=TEXT_MUTED,
+                            color=rx.cond(State.is_dark, TEXT_MUTED_DARK, TEXT_MUTED),
                         ),
                         width="180px",
                         padding_top="22px",
@@ -193,7 +208,11 @@ def index() -> rx.Component:
                 width="100%",
             ),
             padding="40px 40px 48px",
-            border_bottom=f"1px solid {BORDER_LT}",
+            border_bottom=rx.cond(
+                State.is_dark,
+                f"1px solid {BORDER_DARK}",
+                f"1px solid {BORDER_LT}",
+            ),
             width="100%",
         ),
 
@@ -208,7 +227,7 @@ def index() -> rx.Component:
                             font_size="9px",
                             text_transform="uppercase",
                             letter_spacing="0.14em",
-                            color=TEXT_MUTED,
+                            color=rx.cond(State.is_dark, TEXT_MUTED_DARK, TEXT_MUTED),
                         ),
                         width="180px",
                         flex_shrink="0",
@@ -220,39 +239,44 @@ def index() -> rx.Component:
                                     font_size="10px", color=ACCENT),
                             rx.text("Paste Code",
                                     font_family=FONT_SANS, font_size="13px",
-                                    font_weight="500", color=TEXT_PRIMARY),
+                                    font_weight="500",
+                                    color=rx.cond(State.is_dark, TEXT_PRIMARY_DARK, TEXT_PRIMARY)),
                             rx.text("Drop any Python snippet into the editor.",
                                     font_family=FONT_SANS, font_size="12px",
-                                    font_weight="300", color=TEXT_SECONDARY),
+                                    font_weight="300",
+                                    color=rx.cond(State.is_dark, TEXT_SECONDARY_DARK, TEXT_SECONDARY)),
                             spacing="2", align="start",
                         ),
-                        
+
                         rx.vstack(
                             rx.text("02", font_family=FONT_MONO,
                                     font_size="10px", color=ACCENT),
                             rx.text("Run Analysis",
                                     font_family=FONT_SANS, font_size="13px",
-                                    font_weight="500", color=TEXT_PRIMARY),
+                                    font_weight="500",
+                                    color=rx.cond(State.is_dark, TEXT_PRIMARY_DARK, TEXT_PRIMARY)),
                             rx.text("AST + AI kick in simultaneously.",
                                     font_family=FONT_SANS, font_size="12px",
-                                    font_weight="300", color=TEXT_SECONDARY),
+                                    font_weight="300",
+                                    color=rx.cond(State.is_dark, TEXT_SECONDARY_DARK, TEXT_SECONDARY)),
                             spacing="2", align="start",
                         ),
-                        
+
                         rx.vstack(
                             rx.text("03", font_family=FONT_MONO,
                                     font_size="10px", color=ACCENT),
                             rx.text("Read Feedback",
                                     font_family=FONT_SANS, font_size="13px",
-                                    font_weight="500", color=TEXT_PRIMARY),
+                                    font_weight="500",
+                                    color=rx.cond(State.is_dark, TEXT_PRIMARY_DARK, TEXT_PRIMARY)),
                             rx.text("Syntax, bugs, score, AI suggestions.",
                                     font_family=FONT_SANS, font_size="12px",
-                                    font_weight="300", color=TEXT_SECONDARY),
+                                    font_weight="300",
+                                    color=rx.cond(State.is_dark, TEXT_SECONDARY_DARK, TEXT_SECONDARY)),
                             spacing="2", align="start",
                         ),
                         spacing="4",
                         align="start",
-    
                     ),
                     spacing="6",
                     align="start",
@@ -267,6 +291,7 @@ def index() -> rx.Component:
 
         footer(),
 
-        background=BG_BASE,
+        background=rx.cond(State.is_dark, BG_DARK, BG_BASE),
         min_height="100vh",
+        transition="background 0.2s",
     )

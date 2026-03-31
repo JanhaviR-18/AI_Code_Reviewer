@@ -1,17 +1,24 @@
 import reflex as rx
 from ..navbar import navbar
 from ..footer import footer
+from ..state import State
 
 # ── Design Tokens ─────────────────────────────
-BG_BASE   = "#f2f0eb"
-BG_CARD   = "#eceae4"
-BORDER    = "#1a1a1a"
-BORDER_LT = "#d4d0c8"
-ACCENT    = "#c0392b"
+BG_BASE      = "#f2f0eb"
+BG_DARK      = "#1a1a1a"
+BG_CARD      = "#eceae4"
+BG_CARD_DARK = "#2a2a2a"
+BORDER_LT    = "#d4d0c8"
+BORDER_DK    = "#3a3a3a"
+ACCENT       = "#c0392b"
 
 TEXT_PRIMARY   = "#1a1a1a"
 TEXT_SECONDARY = "#5a5a5a"
 TEXT_MUTED     = "#757575"
+
+TEXT_PRIMARY_DK   = "#f2f0eb"
+TEXT_SECONDARY_DK = "#9a9a9a"
+TEXT_MUTED_DK     = "#6a6a6a"
 
 FONT_SERIF = "'Instrument Serif', serif"
 FONT_MONO  = "'DM Mono', monospace"
@@ -25,15 +32,7 @@ def _section_label(text: str) -> rx.Component:
         font_size="9px",
         text_transform="uppercase",
         letter_spacing="0.14em",
-        color=TEXT_PRIMARY,
-    )
-
-
-def _divider() -> rx.Component:
-    return rx.box(
-        height="1px",
-        width="100%",
-        background=BORDER_LT,
+        color=rx.cond(State.is_dark, TEXT_MUTED_DK, TEXT_PRIMARY),
     )
 
 
@@ -43,7 +42,7 @@ def _what_row(num: str, title: str, desc: str) -> rx.Component:
             num,
             font_family=FONT_MONO,
             font_size="10px",
-            color=TEXT_MUTED,
+            color=rx.cond(State.is_dark, TEXT_MUTED_DK, TEXT_MUTED),
             min_width="28px",
             padding_top="2px",
         ),
@@ -53,21 +52,21 @@ def _what_row(num: str, title: str, desc: str) -> rx.Component:
                 font_family=FONT_SANS,
                 font_size="14px",
                 font_weight="500",
-                color=TEXT_PRIMARY,
+                color=rx.cond(State.is_dark, TEXT_PRIMARY_DK, TEXT_PRIMARY),
             ),
             rx.text(
                 desc,
                 font_family=FONT_SANS,
                 font_size="13px",
                 font_weight="300",
-                color=TEXT_SECONDARY,
+                color=rx.cond(State.is_dark, TEXT_SECONDARY_DK, TEXT_SECONDARY),
                 line_height="1.65",
             ),
             spacing="1",
             align="start",
         ),
         padding="18px 0",
-        border_bottom=f"1px solid {BORDER_LT}",
+        border_bottom=rx.cond(State.is_dark, f"1px solid {BORDER_DK}", f"1px solid {BORDER_LT}"),
         width="100%",
         spacing="5",
         align="start",
@@ -82,7 +81,7 @@ def _tech_chip(name: str, detail: str) -> rx.Component:
                 font_family=FONT_MONO,
                 font_size="11px",
                 font_weight="500",
-                color=TEXT_PRIMARY,
+                color=rx.cond(State.is_dark, TEXT_PRIMARY_DK, TEXT_PRIMARY),
                 letter_spacing="0.04em",
             ),
             rx.text(
@@ -90,14 +89,14 @@ def _tech_chip(name: str, detail: str) -> rx.Component:
                 font_family=FONT_SANS,
                 font_size="11px",
                 font_weight="300",
-                color=TEXT_MUTED,
+                color=rx.cond(State.is_dark, TEXT_MUTED_DK, TEXT_MUTED),
             ),
             spacing="1",
             align="start",
         ),
         padding="14px 18px",
-        background=BG_CARD,
-        border=f"1px solid {BORDER_LT}",
+        background=rx.cond(State.is_dark, BG_CARD_DARK, BG_CARD),
+        border=rx.cond(State.is_dark, f"1px solid {BORDER_DK}", f"1px solid {BORDER_LT}"),
         transition="border-color 0.15s",
         _hover={"border_color": ACCENT},
         min_width="140px",
@@ -118,7 +117,7 @@ def _outcome_item(text: str) -> rx.Component:
             font_family=FONT_SANS,
             font_size="13px",
             font_weight="300",
-            color=TEXT_SECONDARY,
+            color=rx.cond(State.is_dark, TEXT_SECONDARY_DK, TEXT_SECONDARY),
             line_height="1.65",
         ),
         spacing="3",
@@ -133,7 +132,7 @@ def about() -> rx.Component:
         rx.html("""
         <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
-        body { background: #f2f0eb; }
+        body { margin: 0; }
         </style>
         """),
 
@@ -162,7 +161,7 @@ def about() -> rx.Component:
                             font_family=FONT_SANS,
                             font_size="15px",
                             font_weight="300",
-                            color=TEXT_SECONDARY,
+                            color=rx.cond(State.is_dark, TEXT_SECONDARY_DK, TEXT_SECONDARY),
                             line_height="1.75",
                             max_width="580px",
                         ),
@@ -170,7 +169,7 @@ def about() -> rx.Component:
                         align="start",
                     ),
                     padding_bottom="36px",
-                    border_bottom=f"1px solid {BORDER_LT}",
+                    border_bottom=rx.cond(State.is_dark, f"1px solid {BORDER_DK}", f"1px solid {BORDER_LT}"),
                     width="100%",
                 ),
 
@@ -192,7 +191,7 @@ def about() -> rx.Component:
                             font_family=FONT_SANS,
                             font_size="14px",
                             font_weight="300",
-                            color=TEXT_SECONDARY,
+                            color=rx.cond(State.is_dark, TEXT_SECONDARY_DK, TEXT_SECONDARY),
                             line_height="1.75",
                         ),
                         spacing="6",
@@ -200,7 +199,7 @@ def about() -> rx.Component:
                         width="100%",
                     ),
                     padding="32px 0",
-                    border_bottom=f"1px solid {BORDER_LT}",
+                    border_bottom=rx.cond(State.is_dark, f"1px solid {BORDER_DK}", f"1px solid {BORDER_LT}"),
                     width="100%",
                 ),
 
@@ -214,36 +213,21 @@ def about() -> rx.Component:
                             padding_top="22px",
                         ),
                         rx.vstack(
-                            _what_row(
-                                "01",
-                                "Error Detection",
+                            _what_row("01", "Error Detection",
                                 "Identifies syntax errors and undefined variables using Python's "
-                                "Abstract Syntax Tree (AST) parser with line-precise feedback.",
-                            ),
-                            _what_row(
-                                "02",
-                                "Bug Detection",
+                                "Abstract Syntax Tree (AST) parser with line-precise feedback."),
+                            _what_row("02", "Bug Detection",
                                 "Detects logical issues including unused imports, unreachable code, "
-                                "and infinite loops — with plain-English explanations for each.",
-                            ),
-                            _what_row(
-                                "03",
-                                "Coding Style Review",
+                                "and infinite loops — with plain-English explanations for each."),
+                            _what_row("03", "Coding Style Review",
                                 "Checks adherence to PEP8 guidelines — indentation, naming conventions, "
-                                "function length — and scores submissions based on compliance.",
-                            ),
-                            _what_row(
-                                "04",
-                                "AI Optimization",
+                                "function length — and scores submissions based on compliance."),
+                            _what_row("04", "AI Optimization",
                                 "Uses Groq API model to recommend alternative data structures, algorithmic "
-                                "improvements and cleaner patterns with before/after code snippets.",
-                            ),
-                            _what_row(
-                                "05",
-                                "Automated Feedback",
+                                "improvements and cleaner patterns with before/after code snippets."),
+                            _what_row("05", "Automated Feedback",
                                 "Reduces manual evaluation effort for instructors by delivering "
-                                "categorized, instant feedback on every submission.",
-                            ),
+                                "categorized, instant feedback on every submission."),
                             spacing="0",
                             width="100%",
                         ),
@@ -252,7 +236,7 @@ def about() -> rx.Component:
                         width="100%",
                     ),
                     padding="32px 0",
-                    border_bottom=f"1px solid {BORDER_LT}",
+                    border_bottom=rx.cond(State.is_dark, f"1px solid {BORDER_DK}", f"1px solid {BORDER_LT}"),
                     width="100%",
                 ),
 
@@ -266,18 +250,10 @@ def about() -> rx.Component:
                             padding_top="4px",
                         ),
                         rx.vstack(
-                            _outcome_item(
-                                "Students paste or upload code and instantly receive actionable insights."
-                            ),
-                            _outcome_item(
-                                "Users can track submission history and feedback across sessions."
-                            ),
-                            _outcome_item(
-                                "Code quality scores give a clear, objective measure of improvement."
-                            ),
-                            _outcome_item(
-                                "Before/after snippets teach better coding patterns in context."
-                            ),
+                            _outcome_item("Students paste or upload code and instantly receive actionable insights."),
+                            _outcome_item("Users can track submission history and feedback across sessions."),
+                            _outcome_item("Code quality scores give a clear, objective measure of improvement."),
+                            _outcome_item("Before/after snippets teach better coding patterns in context."),
                             spacing="3",
                             width="100%",
                         ),
@@ -286,7 +262,7 @@ def about() -> rx.Component:
                         width="100%",
                     ),
                     padding="32px 0",
-                    border_bottom=f"1px solid {BORDER_LT}",
+                    border_bottom=rx.cond(State.is_dark, f"1px solid {BORDER_DK}", f"1px solid {BORDER_LT}"),
                     width="100%",
                 ),
 
@@ -306,7 +282,6 @@ def about() -> rx.Component:
                             _tech_chip("Groq", "AI suggestions"),
                             _tech_chip("PEP8", "Style analysis"),
                             spacing="3",
-                            
                         ),
                         spacing="6",
                         align="start",
@@ -326,7 +301,8 @@ def about() -> rx.Component:
 
         footer(),
 
-        background=BG_BASE,
+        background=rx.cond(State.is_dark, BG_DARK, BG_BASE),
         min_height="100vh",
         width="100%",
+        transition="background 0.2s",
     )

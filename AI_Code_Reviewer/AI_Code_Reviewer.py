@@ -3,6 +3,7 @@ from .components.pages.index import index
 from .components.pages.analyzer import analyzer
 from .components.pages.about import about
 from .components.pages.history import history
+from .components.pages.assistant import assistant
 
 FONT_URL = (
     "https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500"
@@ -27,7 +28,8 @@ app = rx.App(
     },
 )
 
-app.add_page(index,    route="/")
-app.add_page(analyzer, route="/analyzer")
-app.add_page(about,    route="/about")
-app.add_page(history,  route="/history")
+app.add_page(index,     route="/")
+app.add_page(analyzer,  route="/analyzer")
+app.add_page(assistant, route="/assistant")
+app.add_page(about,     route="/about")
+app.add_page(history,   route="/history")
